@@ -7,12 +7,15 @@ export type PhysicsStatus = { firing: boolean; inGoalArea: number; approachingGo
 export type StarInput = { initialWater: number; remainingWater: number; finalGoalWater: number; shotCount: number };
 
 export function getGoalZones(goal: Stage["goal"]) {
+  const scale = goal.size ?? 1;
+  const centerX = goal.x + 24;
+  const halfInternal = 12 * scale;
   return {
-    entrance: { left: goal.x - 2, right: goal.x + 50, top: goal.y + 8, bottom: goal.y + 24 },
+    entrance: { left: centerX - 26 * scale, right: centerX + 26 * scale, top: goal.y + 8 * scale, bottom: goal.y + 24 * scale },
     // The black opening ends around y + 29. Requiring the particle center to
     // reach y + 34 keeps the whole stretched drop below the visible rim.
-    internal: { left: goal.x + 12, right: goal.x + 36, top: goal.y + 34, bottom: goal.y + 49 },
-    disposal: { left: goal.x + 10, right: goal.x + 38, top: goal.y + 48, bottom: goal.y + 64 },
+    internal: { left: centerX - halfInternal, right: centerX + halfInternal, top: goal.y + 34 * scale, bottom: goal.y + 49 * scale },
+    disposal: { left: centerX - 14 * scale, right: centerX + 14 * scale, top: goal.y + 48 * scale, bottom: goal.y + 64 * scale },
   };
 }
 
@@ -23,7 +26,8 @@ export function isPointInside(point: GoalPoint, area: { left: number; right: num
 export function isApproachingGoal(particle: GoalMotion, goal: Stage["goal"]) {
   if (particle.hasEnteredGoal || particle.vy <= 0) return particle.hasEnteredGoal;
   const zones = getGoalZones(goal);
-  return particle.x > goal.x - 35 && particle.x < goal.x + 55 && particle.y > goal.y - 75 && particle.y < zones.disposal.bottom;
+  const scale = goal.size ?? 1;
+  return particle.x > goal.x - 35 * scale && particle.x < goal.x + 55 * scale && particle.y > goal.y - 75 * scale && particle.y < zones.disposal.bottom;
 }
 
 export function shouldCountGoalParticle(particle: Pick<GoalMotion, "x" | "y" | "hasEnteredGoal">, goal: Stage["goal"]) {

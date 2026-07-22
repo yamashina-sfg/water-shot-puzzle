@@ -9,11 +9,11 @@ const zones = getGoalZones(stage.goal);
 test("touching the rim is not inside the internal goal zone", () => {
   assert.equal(isPointInside({ x: stage.goal.x + 24, y: stage.goal.y + 16 }, zones.internal), false);
   assert.equal(isPointInside({ x: stage.goal.x + 24, y: stage.goal.y + 30 }, zones.internal), false);
-  assert.equal(isPointInside({ x: stage.goal.x + 24, y: stage.goal.y + 39 }, zones.internal), true);
+  assert.equal(isPointInside({ x: stage.goal.x + 24, y: (zones.internal.top + zones.internal.bottom) / 2 }, zones.internal), true);
 });
 
 test("the same particle can only be counted once", () => {
-  const particle = { x: stage.goal.x + 24, y: stage.goal.y + 39, hasEnteredGoal: false };
+  const particle = { x: stage.goal.x + 24, y: (zones.internal.top + zones.internal.bottom) / 2, hasEnteredGoal: false };
   assert.equal(shouldCountGoalParticle(particle, stage.goal), true);
   particle.hasEnteredGoal = true;
   assert.equal(shouldCountGoalParticle(particle, stage.goal), false);
@@ -34,8 +34,8 @@ test("clear requires final count, idle physics, and 1200ms stability", () => {
 });
 
 test("stars use final values and are never awarded below required water", () => {
-  assert.equal(calculateStars(stage, { initialWater: 60, remainingWater: 40, finalGoalWater: 11, shotCount: 1 }), 0);
-  assert.equal(calculateStars(stage, { initialWater: 60, remainingWater: 40, finalGoalWater: 12, shotCount: 1 }), 3);
-  assert.equal(calculateStars(stage, { initialWater: 60, remainingWater: 20, finalGoalWater: 15, shotCount: 2 }), 2);
-  assert.equal(calculateStars(stage, { initialWater: 60, remainingWater: 0, finalGoalWater: 18, shotCount: 4 }), 1);
+  assert.equal(calculateStars(stage, { initialWater: stage.water, remainingWater: stage.water - 20, finalGoalWater: stage.goal.required - 1, shotCount: 1 }), 0);
+  assert.equal(calculateStars(stage, { initialWater: stage.water, remainingWater: stage.water - 20, finalGoalWater: stage.goal.required, shotCount: 1 }), 3);
+  assert.equal(calculateStars(stage, { initialWater: stage.water, remainingWater: stage.water - 30, finalGoalWater: stage.goal.required + 3, shotCount: 2 }), 2);
+  assert.equal(calculateStars(stage, { initialWater: stage.water, remainingWater: 0, finalGoalWater: stage.goal.required + 6, shotCount: 4 }), 1);
 });
