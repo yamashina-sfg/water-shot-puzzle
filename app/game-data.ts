@@ -1,7 +1,7 @@
 export type Obstacle = { x: number; y: number; w: number; h: number; kind?: "wall" | "bounce" | "absorb"; move?: { axis: "x" | "y"; distance: number; speed: number } };
-export type Stage = { id: number; name: string; hint: string; gravity: number; gun: { x: number; y: number; angle: number }; goal: { x: number; y: number; required: number }; water: number; obstacles: Obstacle[] };
+export type Stage = { id: number; name: string; hint: string; gravity: number; gun: { x: number; y: number; angle: number }; goal: { x: number; y: number; required: number }; water: number; star3WaterLimit?: number; star2WaterLimit?: number; star3ShotLimit?: number; star2ShotLimit?: number; obstacles: Obstacle[] };
 
-export const WORLD = { width: 390, height: 620, groundY: 548, maxParticles: 90, particleLife: 5000, shotCount: 20 } as const;
+export const WORLD = { width: 390, height: 620, groundY: 548, maxParticles: 90, particleLife: 5000, shotCount: 20, clearSettleMs: 1200 } as const;
 
 export const STAGES: Stage[] = [
   { id: 1, name: "はじめの一滴", hint: "45°前後で、ほどよく溜めよう", gravity: 310, gun: { x: 52, y: 490, angle: 45 }, goal: { x: 323, y: 457, required: 12 }, water: 60, obstacles: [] },
